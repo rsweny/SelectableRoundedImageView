@@ -61,7 +61,7 @@ public class SelectableRoundedImageView extends ImageView {
     private boolean isOval = false;
 
     private Drawable mDrawable;
-    private Bitmap mReusedBitmap;
+    private static Bitmap mReusedBitmap;
 
     private float[] mRadii = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -395,9 +395,9 @@ public class SelectableRoundedImageView extends ImageView {
                 drawable.draw(canvas);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
-                bitmap = null;
+                mReusedBitmap = null;
             }
-            return mBitmap;
+            return mReusedBitmap;
         }
 
         @Override
