@@ -61,6 +61,7 @@ public class SelectableRoundedImageView extends ImageView {
     private boolean isOval = false;
 
     private Drawable mDrawable;
+    private Bitmap mReusedBitmap;
 
     private float[] mRadii = new float[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -380,19 +381,23 @@ public class SelectableRoundedImageView extends ImageView {
                 return ((BitmapDrawable) drawable).getBitmap();
             }
 
-            Bitmap bitmap;
+
             int width = Math.max(drawable.getIntrinsicWidth(), 2);
             int height = Math.max(drawable.getIntrinsicHeight(), 2);
             try {
-                bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-                Canvas canvas = new Canvas(bitmap);
+                if (mReusedBitmap == null || mReusedBitmap.getWidth() != width || mReusedBitmap.getHeight() != height)
+                {
+                    Log.w(TAG, "creating fresh reusable Bitmap " + width + "x" + height);
+                    mReusedBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+                }
+                Canvas canvas = new Canvas(mReusedBitmap);
                 drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
                 drawable.draw(canvas);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 bitmap = null;
             }
-            return bitmap;
+            return mBitmap;
         }
 
         @Override
